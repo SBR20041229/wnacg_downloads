@@ -27,29 +27,40 @@ def is_valid_image(url):
 def get_manga_images(url, download_folder):
     # 設定 Selenium 瀏覽器
     options = webdriver.ChromeOptions()
-    options.add_argument('--headless')  # 無頭模式，不開啟瀏覽器
+    options.add_argument('--headless')
     options.add_argument('--disable-gpu')
     options.add_argument('--no-sandbox')
     options.add_argument('--disable-dev-shm-usage')
+    options.add_argument('--disable-extensions')
+    options.add_argument('--disable-setuid-sandbox')
+    options.add_argument('--window-size=1280,720')
+    options.add_argument('--disable-software-rasterizer')
     options.binary_location = os.environ.get('CHROME_BINARY_LOCATION', '')
     
-    service = Service(os.environ.get('CHROMEDRIVER_PATH', ChromeDriverManager().install()))
-    driver = webdriver.Chrome(service=service, options=options)
-    driver.get(url)
-    
-    # 模擬滾動頁面以加載所有圖片
-    last_height = driver.execute_script("return document.body.scrollHeight")
-    while True:
-        driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")
-        time.sleep(2)  # 等待加載
-        new_height = driver.execute_script("return document.body.scrollHeight")
-        if new_height == last_height:
-            break
-        last_height = new_height
-    
-    # 取得 HTML 內容
-    soup = BeautifulSoup(driver.page_source, 'html.parser')
-    driver.quit()
+    try:
+        service = Service(os.environ.get('CHROMEDRIVER_PATH', ChromeDriverManager().install()))
+        driver = webdriver.Chrome(service=service, options=options)
+        driver.set_page_load_timeout(30)  # 設定頁面載入超時
+        driver.get(url)
+        
+        # 模擬滾動頁面以加載所有圖片
+        last_height = driver.execute_script("return document.body.scrollHeight")
+        while True:
+            driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")
+            time.sleep(2)  # 等待加載
+            new_height = driver.execute_script("return document.body.scrollHeight")
+            if new_height == last_height:
+                break
+            last_height = new_height
+        
+        # 取得 HTML 內容
+        soup = BeautifulSoup(driver.page_source, 'html.parser')
+    except Exception as e:
+        print(f"瀏覽器初始化錯誤: {e}")
+        return []
+    finally:
+        if 'driver' in locals():
+            driver.quit()
     
     # 找到所有圖片連結並修正URL
     image_tags = soup.find_all('img')

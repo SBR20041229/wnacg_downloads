@@ -6,7 +6,13 @@ RUN apt-get update && apt-get install -y \
     unzip \
     fonts-noto-cjk \
     chromium \
-    chromium-driver
+    chromium-driver \
+    xvfb \
+    libgconf-2-4 \
+    libnss3 \
+    libxss1 \
+    libasound2 \
+    libgbm1
 
 # 設定工作目錄
 WORKDIR /app
@@ -22,9 +28,10 @@ ENV CHROME_BINARY_LOCATION=/usr/bin/chromium
 ENV CHROMEDRIVER_PATH=/usr/bin/chromedriver
 ENV PORT=5000
 ENV PYTHONUNBUFFERED=1
+ENV DISPLAY=:99
 
 # 開放端口
 EXPOSE 5000
 
-# 啟動應用
-CMD ["python", "app.py"]
+# 使用 xvfb-run 啟動應用
+CMD xvfb-run --server-args="-screen 0 1280x720x24" python app.py

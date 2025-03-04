@@ -88,6 +88,10 @@ def download():
         if temp_folder:
             temp_manager.cleanup(temp_folder)
 
+@app.route('/health')
+def health():
+    return jsonify({'status': 'healthy'})
+
 if __name__ == '__main__':
     # 使用環境變數的 PORT，如果沒有則使用 5000
     port = int(os.environ.get('PORT', 5000))
