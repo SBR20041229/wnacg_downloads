@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>漫畫下載器</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <h1>漫畫下載器</h1>
+        <div class="download-form">
+            <input type="text" id="manga-url" placeholder="請輸入漫畫網址" required>
+            <input type="text" id="pdf-name" placeholder="PDF檔案名稱 (選填)">
+            <button id="download-btn">開始下載</button>
+        </div>
+        <div class="status">
+            <div class="progress-bar">
+                <div class="progress"></div>
+            </div>
+            <p id="status-message"></p>
+        </div>
+    </div>
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+</body>
+</html>
