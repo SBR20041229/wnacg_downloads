@@ -30,8 +30,10 @@ def get_manga_images(url, download_folder):
     options.add_argument('--headless')  # 無頭模式，不開啟瀏覽器
     options.add_argument('--disable-gpu')
     options.add_argument('--no-sandbox')
+    options.add_argument('--disable-dev-shm-usage')
+    options.binary_location = os.environ.get('CHROME_BINARY_LOCATION', '')
     
-    service = Service(ChromeDriverManager().install())
+    service = Service(os.environ.get('CHROMEDRIVER_PATH', ChromeDriverManager().install()))
     driver = webdriver.Chrome(service=service, options=options)
     driver.get(url)
     
