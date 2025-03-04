@@ -2,3 +2,5 @@ flask
 requests
 Pillow
 beautifulsoup4
+selenium
+webdriver_manager
